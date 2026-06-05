@@ -1,6 +1,7 @@
 # Context Management Model context Protocol
 
 from mcp.server.fastmcp import FastMCP
+from pathlib import Path
 import os
 import re
 
@@ -10,6 +11,8 @@ FILE_PATH = ''
 FILE_UPLOAD_LIMIT = 500
 CONTEXT_TITLE = ''
 URL = []
+BASE_DIR = path('Context')
+
 
 
 file_size_bytes = os.path.getsize(FILE_PATH)
@@ -37,7 +40,7 @@ def llm_context_retrieve(filepath: str) -> str:
 
     return content
 
-@mcp.tool()
+@mcp.tool(name='url_context_retrieve')
 def url_context_retrieve() -> list[str] | None:
 
     with open(FILE_PATH, 'r') as file:
@@ -45,3 +48,11 @@ def url_context_retrieve() -> list[str] | None:
     URL = re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', content)
 
     return URL
+
+@mcp.tool()
+def list_context_files(filepath: str) -> int :
+
+    directory = Path('contexts')
+
+    count_files = sum(1 for file in directory.iterdir() if file.is_file())
+    return count_files
